@@ -8,6 +8,7 @@ from transformers import (
     TrainingArguments,
     pipeline,
     logging,
+    TextDataset,
 )
 from peft import LoraConfig
 from trl import SFTTrainer
@@ -21,7 +22,11 @@ guanaco_dataset = "mlabonne/guanaco-llama2-1k"
 # Fine-tuned model
 new_model = "llama-2-7b-chat-guanaco"
 
+#tokenizer = AutoTokenizer.from_pretrained(base_model, trust_remote_code=True)
 dataset = load_dataset(guanaco_dataset, split="train")
+#print(dataset)
+dataset = load_dataset('text', data_files='bittensor.txt', split = 'train')
+#print(dataset)
 
 compute_dtype = getattr(torch, "float16")
 
@@ -39,7 +44,6 @@ model = AutoModelForCausalLM.from_pretrained(
 model.config.use_cache = False
 model.config.pretraining_tp = 1
 
-tokenizer = AutoTokenizer.from_pretrained(base_model, trust_remote_code=True)
 tokenizer.pad_token = tokenizer.eos_token
 tokenizer.padding_side = "right"
 
@@ -82,6 +86,8 @@ trainer = SFTTrainer(
     packing=False,
 )
 
+trainer.train()
+
 trainer.model.save_pretrained(new_model)
 trainer.tokenizer.save_pretrained(new_model)
 
@@ -91,11 +97,7 @@ log_dir = "results/runs"
 
 logging.set_verbosity(logging.CRITICAL)
 
-prompt = "Who is Leonardo Da Vinci?"
+prompt = "What is bittensor?"
 pipe = pipeline(task="text-generation", model=model, tokenizer=tokenizer, max_length=200)
-result = pipe(f"<s>[INST] {prompt} [/INST]")
-print(result[0]['generated_text'])
-
-prompt = "What is Datacamp Career track?"
 result = pipe(f"<s>[INST] {prompt} [/INST]")
 print(result[0]['generated_text'])
