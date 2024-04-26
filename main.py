@@ -22,7 +22,7 @@ guanaco_dataset = "mlabonne/guanaco-llama2-1k"
 # Fine-tuned model
 new_model = "llama-2-7b-chat-guanaco"
 
-#tokenizer = AutoTokenizer.from_pretrained(base_model, trust_remote_code=True)
+tokenizer = AutoTokenizer.from_pretrained(base_model, trust_remote_code=True)
 dataset = load_dataset(guanaco_dataset, split="train")
 #print(dataset)
 dataset = load_dataset('text', data_files='bittensor.txt', split = 'train')
@@ -85,6 +85,11 @@ trainer = SFTTrainer(
     args=training_params,
     packing=False,
 )
+prompt = "What is bittensor?"
+pipe = pipeline(task="text-generation", model=model, tokenizer=tokenizer, max_length=200)
+result = pipe(f"<s>[INST] {prompt} [/INST]")
+print("------------------------------------------before-----------------------------------------------")
+print(result[0]['generated_text'])
 
 trainer.train()
 
@@ -100,4 +105,5 @@ logging.set_verbosity(logging.CRITICAL)
 prompt = "What is bittensor?"
 pipe = pipeline(task="text-generation", model=model, tokenizer=tokenizer, max_length=200)
 result = pipe(f"<s>[INST] {prompt} [/INST]")
+print("------------------------------------------after_-----------------------------------------------")
 print(result[0]['generated_text'])
