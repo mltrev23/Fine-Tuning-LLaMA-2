@@ -24,6 +24,7 @@ dataset = load_dataset('text', data_files='bittensor.txt', split = 'train')
 #print(dataset)
 
 compute_dtype = getattr(torch, "float16")
+print(type(compute_dtype))
 
 quant_config = BitsAndBytesConfig(
     load_in_4bit=True,
