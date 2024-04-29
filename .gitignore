@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 
 llama-2-7b-chat-guanaco/
+results/
