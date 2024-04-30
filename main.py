@@ -32,6 +32,14 @@ quant_config = BitsAndBytesConfig(
     bnb_4bit_compute_dtype=compute_dtype,
     bnb_4bit_use_double_quant=False,
 )
+model = AutoModelForCausalLM.from_pretrained(
+    base_model,
+    quantization_config=quant_config,
+    device_map={"": 0}
+)
+model.config.use_cache = False
+model.config.pretraining_tp = 1
+
 tokenizer.pad_token = tokenizer.eos_token
 tokenizer.padding_side = "right"
 
