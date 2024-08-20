@@ -20,7 +20,7 @@ guanaco_dataset = "mlabonne/guanaco-llama2-1k"
 tokenizer = AutoTokenizer.from_pretrained(base_model, trust_remote_code=True)
 #dataset = load_dataset(guanaco_dataset, split="train")
 #print(dataset)
-dataset = load_dataset('text', data_files='bittensor.txt', split = 'train')
+dataset = load_dataset('text', data_files='datasets/bittensor.txt', split = 'train')
 #print(dataset)
 
 compute_dtype = getattr(torch, "float16")
